@@ -34,5 +34,5 @@ A comprehensive healthcare analytics project leveraging **Python (Pandas, Seabor
 ## 🛠️ Tech Stack & Deliverables
 * **Analysis & Modeling:** Python, Pandas, NumPy, Seaborn, Matplotlib.
 * **Artifacts:**
-  * Interactive Notebook: `Diabetes_Risk_Analysis.ipynb`
-  * Executive Slide Deck: `Diabetes_Risk_Analysis_Deck.pdf`
+  * Interactive Notebook: [Diabetes_Risk_Analysis.ipynb](Diabetes_Risk_Analysis.ipynb)
+* Executive Slide Deck: [Diabetes_Risk_Analysis_Deck.pptx](Diabetes_Risk_Analysis_Deck.pptx)
