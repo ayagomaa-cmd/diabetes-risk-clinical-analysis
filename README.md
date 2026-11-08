@@ -36,3 +36,4 @@ A comprehensive healthcare analytics project leveraging **Python (Pandas, Seabor
 * **Artifacts:**
   * Interactive Notebook: [Diabetes_Risk_Analysis.ipynb](Diabetes_Risk_Analysis.ipynb)
 * Executive Slide Deck: [Diabetes_Risk_Analysis_Deck.pptx](Diabetes_Risk_Analysis_Deck.pptx)
+* * Executive Slide Deck: [Diabetes_Risk_Analysis_Deck.pdf](Diabetes_Risk_Analysis_Deck.pdf)
