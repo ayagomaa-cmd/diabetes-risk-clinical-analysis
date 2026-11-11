@@ -33,14 +33,18 @@ A comprehensive healthcare analytics project leveraging **Python (Pandas, Seabor
 
 ## 🛠️ Tech Stack & Deliverables
 * **Analysis & Modeling:** Python, Pandas, NumPy, Seaborn, Matplotlib.
+* **Interactive Visualization:** HTML5, CSS3, Vanilla JavaScript, SVG Micro-Charts.
 * **Artifacts:**
-  * Interactive Notebook: [Diabetes_Risk_Analysis.ipynb](Diabetes_Risk_Analysis.ipynb)
-* Executive Slide Deck: [Diabetes_Risk_Analysis_Deck.pptx](Diabetes_Risk_Analysis_Deck.pptx)
-* * Executive Slide Deck: [Diabetes_Risk_Analysis_Deck.pdf](Diabetes_Risk_Analysis_Deck.pdf)
-  * ---
+  * **Interactive Notebook:** [Diabetes_Risk_Analysis.ipynb](Diabetes_Risk_Analysis.ipynb)
+  * **Executive Slide Deck (PPTX):** [Diabetes_Risk_Analysis_Deck.pptx](Diabetes_Risk_Analysis_Deck.pptx)
+  * **Executive Slide Deck (PDF):** [Diabetes_Risk_Analysis_Deck.pdf](Diabetes_Risk_Analysis_Deck.pdf)
+
+---
 
 ## 📊 Interactive Executive Dashboard
-* **File:** [diabetes_risk_interactive_dashboard-v3.html](diabetes_risk_interactive_dashboard-v3.html)
+
+🔗 **[👉 Click Here to Launch Live Dashboard](https://ayagomaa-cmd.github.io/YOUR-REPO-NAME/FILENAME.html)**
+
 * **Key Features:**
   * **4 Interactive Views:** *Overview*, *Demographics*, *Clinical Biomarkers*, and *Lifestyle Countermeasures*.
   * **Live Cross-Filtering:** Dynamically slice the **34,284 screened patient cohort** by Risk Band, Age Group, HbA1c Tier, Physical Activity, Diet Quality, and Family History.
