@@ -43,7 +43,7 @@ A comprehensive healthcare analytics project leveraging **Python (Pandas, Seabor
 
 ## 📊 Interactive Executive Dashboard
 
-🚀 **[Launch Live Interactive Dashboard](https://ayagomaa-cmd.github.io/YOUR-REPO-NAME/)**
+🚀🚀 **[Launch Live Interactive Dashboard](https://ayagomaa-cmd.github.io/diabetes-risk-clinical-analysis/)**
 
 * **Source File:** [`index.html`](index.html)
 * **Key Features:**
