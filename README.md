@@ -43,9 +43,10 @@ A comprehensive healthcare analytics project leveraging **Python (Pandas, Seabor
 
 ## 📊 Interactive Executive Dashboard
 
-🔗 **[👉 Click Here to Launch Live Dashboard](https://ayagomaa-cmd.github.io/YOUR-REPO-NAME/FILENAME.html)**
+🚀 **[Launch Live Interactive Dashboard](https://ayagomaa-cmd.github.io/YOUR-REPO-NAME/)**
 
+* **Source File:** [`index.html`](index.html)
 * **Key Features:**
   * **4 Interactive Views:** *Overview*, *Demographics*, *Clinical Biomarkers*, and *Lifestyle Countermeasures*.
   * **Live Cross-Filtering:** Dynamically slice the **34,284 screened patient cohort** by Risk Band, Age Group, HbA1c Tier, Physical Activity, Diet Quality, and Family History.
-  * **Zero Dependencies:** Self-contained HTML/CSS/SVG architecture that runs in any browser offline or via GitHub Pages.
+  * **Zero Dependencies:** Pure vanilla HTML, CSS, and SVG engine running locally offline or hosted live via GitHub Pages.
