@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comprehensive Diabetes Risk Analysis Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Palette extracted from uploaded UI inspiration */
+  --bg-top-left: #DFC5E8;    /* Soft lavender-pink */
+  --bg-top-right: #F7DFD0;   /* Warm peach-cream */
+  --bg-mid: #F5F3F7;         /* Soft alabaster */
+  --bg-bottom: #D5C6F5;      /* Pastel lilac-periwinkle */
+  
+  --card: rgba(255, 255, 255, 0.92);
+  --card-solid: #FFFFFF;
+  --dark-card: #1E1E22;      /* Deep charcoal progress card */
+  --dark-card-sub: #2A2A30;
+  
+  --ink: #1C1C21;            /* Deep charcoal ink */
+  --mut: #7D7C86;            /* Soft warm grey */
+  --line: #ECE9F2;           /* Subtle divider */
+  
+  /* Accent & Priority Palette from image */
+  --k: #1E1E22;              /* Charcoal active pill */
+  --lime: #CBE896;           /* Progress ring & 'To Do' lime */
+  --lime-deep: #82B836;
+  --lav: #DCD3FF;            /* Design / UI-UX tag lavender */
+  --lav-deep: #7C5CE6;
+  --purple-pill: #A855F7;    /* 'In Progress' purple */
+  --blue-pill: #1D63DC;      /* 'Meet' button blue */
+  
+  /* Priority / Risk semantic colors (High / Medium / Low pills) */
+  --rd-bg: #F6D2D4;          /* High Priority soft rose */
+  --rd: #D95B62;             /* High Risk coral-red */
+  --rd-ink: #9E2A31;
+  
+  --am-bg: #FBE3C8;          /* Medium Priority soft peach */
+  --am: #E59648;             /* Moderate Risk amber-peach */
+  --am-ink: #9C5714;
+  
+  --gn-bg: #C6E2D4;          /* Low Priority soft sage */
+  --gn: #4RA878;
+  --gn-solid: #4CA979;       /* Low Risk sage green */
+  --gn-ink: #1F6642;
+
+  /* Chart series variables */
+  --c1: #1E1E22;             /* Primary charcoal bar */
+  --c2: #7C5CE6;             /* Lavender-violet */
+  --c3: #E59648;             /* Warm peach */
+  --or: #D95B62;             /* Active selection highlight coral */
+
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--bg-mid);
+  background-image: 
+    radial-gradient(at 8% 6%, var(--bg-top-left) 0px, transparent 48%),
+    radial-gradient(at 92% 10%, var(--bg-top-right) 0px, transparent 50%),
+    radial-gradient(at 50% 96%, var(--bg-bottom) 0px, transparent 55%),
+    linear-gradient(180deg, #F3EAF6 0%, #F7EFEA 45%, #EFEBF9 100%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.w {
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 22px 24px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Header & Pill Navigation */
+.hd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px;
+}
+
+.title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.greeting-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--mut);
+  letter-spacing: 0.02em;
+}
+
+.greeting-pill span.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lime-deep);
+  box-shadow: 0 0 0 3px rgba(203, 232, 150, 0.45);
+}
+
+h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.55);
+  padding: 6px;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px rgba(28, 28, 33, 0.04);
+}
+
+button, select {
+  font: 600 13px 'Plus Jakarta Sans', sans-serif;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.tab {
+  border: 0;
+  background: transparent;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  min-height: 40px;
+  transition: all 0.2s ease;
+  color: var(--mut);
+}
+
+.tab:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.tab[aria-current=page] {
+  background: var(--dark-card);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(30, 30, 34, 0.18);
+}
+
+/* Filter Bar (frosted white pill bar) */
+.fl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--mut);
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  padding: 12px 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 24px rgba(28, 28, 33, 0.04);
+}
+
+.fl label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+select {
+  border: 1px solid #E5E0EC;
+  background: #FBF9FD;
+  padding: 7px 12px;
+  border-radius: 999px;
+  min-height: 36px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+select:hover, select:focus {
+  border-color: var(--lav-deep);
+}
+
+.rs {
+  border: 1px solid #DCD3FF;
+  background: var(--lav);
+  color: #432C8F;
+  padding: 7px 16px;
+  border-radius: 999px;
+  min-height: 36px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.rs:hover {
+  background: #CFC2FF;
+  transform: translateY(-1px);
+}
+
+.st {
+  margin-left: auto;
+  font-weight: 600;
+  background: #F5F2F9;
+  padding: 6px 12px;
+  border-radius: 999px;
+  color: var(--mut);
+}
+
+/* 5 KPI Cards (Inspired by Dark 'Today's Progress' Card + Priority Pills) */
+.kp {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.k {
+  background: var(--card-solid);
+  color: var(--ink);
+  border-radius: 22px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 26px rgba(28, 28, 33, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+/* First KPI Card styled like the Dark Charcoal 'Today's Progress' widget */
+.k:first-child {
+  background: var(--dark-card);
+  color: #FFFFFF;
+  border-color: #2E2E36;
+  box-shadow: 0 12px 28px rgba(30, 30, 34, 0.16);
+}
+
+.k:first-child span {
+  color: #A0A0AB;
+}
+
+.k:first-child b {
+  color: var(--lime);
+}
+
+.k .pill-tag {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 4px;
+}
+
+.k:nth-child(1) .pill-tag { background: rgba(203, 232, 150, 0.18); color: var(--lime); }
+.k:nth-child(2) .pill-tag { background: var(--rd-bg); color: var(--rd-ink); border: 1px solid #E9B3B6; }
+.k:nth-child(3) .pill-tag { background: var(--am-bg); color: var(--am-ink); border: 1px solid #ECC498; }
+.k:nth-child(4) .pill-tag { background: var(--lav); color: #432C8F; border: 1px solid #C4B5FD; }
+.k:nth-child(5) .pill-tag { background: var(--gn-bg); color: var(--gn-ink); border: 1px solid #9FD1B8; }
+
+.k b {
+  display: block;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 4px 0;
+}
+
+.k span {
+  font-size: 11.5px;
+  color: var(--mut);
+  font-weight: 500;
+}
+
+/* Main Chart Cards Grid */
+.g {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.c {
+  background: var(--card);
+  backdrop-filter: blur(14px);
+  border-radius: 24px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 250px;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 10px 30px rgba(28, 28, 33, 0.05);
+}
+
+/* Make the Donut card in Overview match the dark charcoal 'Today's Progress' widget */
+.c.dark-widget {
+  background: var(--dark-card);
+  color: #FFFFFF;
+  border-color: #2E2E36;
+  box-shadow: 0 14px 34px rgba(30, 30, 34, 0.16);
+}
+
+.c.dark-widget h2 { color: #FFFFFF; }
+.c.dark-widget small { color: #9E9EA8; }
+.c.dark-widget .lg button { color: #E4E4EB; }
+.c.dark-widget .lg button b { color: #FFFFFF; }
+
+.c h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.c small {
+  font-size: 11.5px;
+  color: var(--mut);
+  font-weight: 500;
+}
+
+/* Horizontal Bar Rows */
+.r {
+  display: grid;
+  grid-template-columns: 122px 1fr 66px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  border: 0;
+  background: none;
+  padding: 4px 6px;
+  border-radius: 10px;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s;
+}
+
+.r:hover {
+  background: rgba(220, 211, 255, 0.22);
+}
+
+.r span {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.r .bar-track {
+  width: 100%;
+  height: 12px;
+  background: #F1EEF6;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.r i {
+  display: block;
+  height: 100%;
+  background: var(--c1);
+  border-radius: 999px;
+  min-width: 4px;
+  transition: width 0.3s ease;
+}
+
+.r em {
+  font-style: normal;
+  text-align: right;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.on {
+  outline: 2px solid var(--lav-deep);
+  outline-offset: 2px;
+  border-radius: 10px;
+  background: rgba(220, 211, 255, 0.3) !important;
+}
+
+/* Vertical Columns */
+.cl {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  min-height: 155px;
+  padding-top: 12px;
+}
+
+.cl button {
+  flex: 1;
+  border: 0;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 170px;
+  font-size: 11px;
+  gap: 5px;
+  padding: 4px;
+  border-radius: 12px;
+  transition: background 0.15s;
+}
+
+.cl button:hover {
+  background: rgba(220, 211, 255, 0.22);
+}
+
+.cl b {
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.cl i {
+  display: block;
+  width: 100%;
+  max-width: 42px;
+  background: var(--dark-card);
+  border-radius: 10px 10px 6px 6px;
+  transition: height 0.3s ease;
+}
+
+.cl span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--mut);
+}
+
+/* Donut Chart */
+.dn {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.dn svg {
+  width: 126px;
+  height: 126px;
+  flex: none;
+}
+
+.lg {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.lg button {
+  border: 0;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 12px;
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 999px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.c:not(.dark-widget) .lg button {
+  background: #F7F5FA;
+}
+
+.lg s {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+/* Line Chart */
+.ln { width: 100%; }
+.ln text { fill: var(--mut); font-size: 8.5px; font-weight: 600; }
+
+.em {
+  padding: 40px;
+  text-align: center;
+  color: var(--mut);
+  font-weight: 600;
+}
+
+/* Priority / Tag Insight Cards */
+.ins {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1;
+  justify-content: center;
+}
+
+.ins-item {
+  background: #FBF9FD;
+  border: 1px solid #ECE8F4;
+  border-left: 4px solid var(--lav-deep);
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.42;
+}
+
+.ins-item:nth-child(1) { border-left-color: var(--rd); background: #FDF8F8; }
+.ins-item:nth-child(2) { border-left-color: var(--am); background: #FEFBF6; }
+.ins-item:nth-child(3) { border-left-color: var(--gn-solid); background: #F6FBF8; }
+
+.ins-item b {
+  display: block;
+  color: var(--ink);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+@media(max-width: 1040px) {
+  .kp { grid-template-columns: repeat(2, 1fr); }
+  .g { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width: 660px) {
+  .kp { grid-template-columns: 1fr; }
+  .g { grid-template-columns: 1fr; }
+  .st { margin-left: 0; }
+  .c { grid-row: auto !important; }
+}
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="hd">
+    <div class="title-wrap">
+      <div class="greeting-pill"><span class="dot"></span> CLINICAL ANALYTICS SUITE · 34,284 SCREENED COHORT</div>
+      <h1 id="ti"></h1>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Dashboard pages"></nav>
+  </div>
+  <div class="fl" id="fl"></div>
+  <div class="kp" id="kp"></div>
+  <div class="g" id="gr"></div>
+</div>
+<script>
+// Deterministic cohort generator matching the exact 34,284 screened patients from the Diabetes Risk Analysis Deck
+const DB = (function(){
+  const age = ["18-29","30-39","40-49","50-59","60-69","70-79","80-90"];
+  const risk = ["High Risk","Moderate Risk","Low Risk"];
+  const hba1c = ["Normal (<5.7%)","Prediabetes (5.7-6.4%)","Diabetic (6.5%+)"];
+  const bmi = ["Underweight","Normal","Overweight","Obese I","Obese II","Obese III"];
+  const act = ["Low Activity","Moderate Activity","High Activity"];
+  const diet = ["Poor Diet","Average Diet","Healthy Diet"];
+  const fam = ["No Family History","Family History"];
+  const fbs = ["Normal (<100 mg/dL)","Prediabetes (100-139)","Danger (>140 mg/dL)"];
+
+  const N = 34284;
+  const A = new Uint8Array(N), R = new Uint8Array(N), H = new Uint8Array(N),
+        B = new Uint8Array(N), P = new Uint8Array(N), D = new Uint8Array(N),
+        F = new Uint8Array(N), G = new Uint8Array(N), S = new Float32Array(N);
+
+  const ageCounts = [4800, 5600, 6200, 6884, 5200, 3600, 2000];
+  const ageScores = [67.1, 69.9, 72.0, 74.3, 78.9, 78.9, 78.6];
+
+  let idx = 0;
+  for(let a=0; a<7; a++){
+    const cnt = ageCounts[a];
+    const baseScore = ageScores[a];
+    for(let j=0; j<cnt; j++){
+      A[idx] = a;
+      const u1 = (j * 2654435761 % 1000) / 1000;
+      const h = u1 < 0.195 ? 0 : (u1 < 0.515 ? 1 : 2);
+      H[idx] = h;
+
+      const u2 = ((j * 1597334677 + a * 101) % 1000) / 1000;
+      const b = u2 < 0.04 ? 0 : (u2 < 0.28 ? 1 : (u2 < 0.56 ? 2 : (u2 < 0.78 ? 3 : (u2 < 0.91 ? 4 : 5))));
+      B[idx] = b;
+
+      const u3 = ((j * 3266489917 + 7) % 1000) / 1000;
+      const p = u3 < 0.35 ? 0 : (u3 < 0.75 ? 1 : 2);
+      P[idx] = p;
+
+      const u4 = ((j * 668265263 + 13) % 1000) / 1000;
+      const d = u4 < 0.32 ? 0 : (u4 < 0.75 ? 1 : 2);
+      D[idx] = d;
+
+      const u5 = ((j * 374761393 + 29) % 1000) / 1000;
+      const f = u5 < 0.588 ? 0 : 1;
+      F[idx] = f;
+
+      const u6 = ((j * 2246822519 + h * 211) % 1000) / 1000;
+      const g = (h === 2 && u6 < 0.72) || u6 < 0.44 ? 2 : (u6 < 0.78 ? 1 : 0);
+      G[idx] = g;
+
+      let sc = baseScore + (f ? 5.7 : -4.0) + (p === 0 ? 4.2 : -1.8) + (d === 0 ? 3.8 : -1.8) + (h === 2 ? 2.5 : (h === 0 ? -3.0 : 0));
+      S[idx] = Math.max(22, Math.min(99, sc));
+      idx++;
+    }
+  }
+
+  const order = Array.from({length: N}, (_, i) => i);
+  order.sort((i, k) => {
+    const wi = (H[i]===2?22:H[i]===1?10:0) + (P[i]===0?9:0) + (D[i]===0?8:0) + (G[i]===2?14:0) + (B[i]>=4?8:B[i]===3?5:B[i]===2?2:0) + S[i]*0.35;
+    const wk = (H[k]===2?22:H[k]===1?10:0) + (P[k]===0?9:0) + (D[k]===0?8:0) + (G[k]===2?14:0) + (B[k]>=4?8:B[k]===3?5:B[k]===2?2:0) + S[k]*0.35;
+    return wk - wi;
+  });
+  for(let rank=0; rank<N; rank++){
+    const i = order[rank];
+    if(rank < 25113) R[i] = 0;       // High Risk (73.2%)
+    else if(rank < 33956) R[i] = 1;  // Moderate Risk (25.8%)
+    else R[i] = 2;                   // Low Risk (1.0%)
+  }
+
+  for(let a=0; a<7; a++){
+    let sum = 0, c = 0;
+    for(let i=0; i<N; i++) if(A[i]===a){ sum += S[i]; c++; }
+    const diff = ageScores[a] - (sum / c);
+    for(let i=0; i<N; i++) if(A[i]===a) S[i] += diff;
+  }
+
+  return {age, risk, hba1c, bmi, act, diet, fam, fbs, A, R, H, B, P, D, F, G, S, N};
+})();
+
+const N = DB.N;
+const PG = ['Overview','Demographics','Clinical','Lifestyle'];
+const st = {p:'Overview', a:-1, r:-1, h:-1, b:-1, p_act:-1, d:-1, f:-1, g:-1};
+const FK = {A:'a', R:'r', H:'h', B:'b', P:'p_act', D:'d', F:'f', G:'g'};
+const DN = {A:'age', R:'risk', H:'hba1c', B:'bmi', P:'act', D:'diet', F:'fam', G:'fbs'};
+const fm = {
+  n: v => Math.round(v).toLocaleString('en-US'),
+  p: v => (v*100).toFixed(1)+'%',
+  sc: v => v.toFixed(1)+' pts'
+};
+const $ = s => document.querySelector(s);
+
+function rows(skip){
+  const o = [];
+  for(let i=0; i<N; i++){
+    if(skip!='a' && st.a>=0 && DB.A[i]!=st.a) continue;
+    if(skip!='r' && st.r>=0 && DB.R[i]!=st.r) continue;
+    if(skip!='h' && st.h>=0 && DB.H[i]!=st.h) continue;
+    if(skip!='b' && st.b>=0 && DB.B[i]!=st.b) continue;
+    if(skip!='p_act' && st.p_act>=0 && DB.P[i]!=st.p_act) continue;
+    if(skip!='d' && st.d>=0 && DB.D[i]!=st.d) continue;
+    if(skip!='f' && st.f>=0 && DB.F[i]!=st.f) continue;
+    if(skip!='g' && st.g>=0 && DB.G[i]!=st.g) continue;
+    o.push(i);
+  }
+  return o;
+}
+
+function grp(ix, key, n){
+  const cnt = new Float64Array(n), scSum = new Float64Array(n), hiCnt = new Float64Array(n);
+  for(const i of ix){
+    const k = DB[key][i];
+    cnt[k]++;
+    scSum[k] += DB.S[i];
+    if(DB.R[i] === 0) hiCnt[k]++;
+  }
+  return Array.from({length:n}, (_,k) => ({
+    k,
+    c: cnt[k],
+    avg: cnt[k] ? scSum[k]/cnt[k] : 0,
+    hi: cnt[k] ? hiCnt[k]/cnt[k] : 0
+  }));
+}
+
+const card = (t,h,n,sp,extraCls='') => `<div class="c ${extraCls}" style="${sp?'grid-row:span 2':''}"><h2>${t}</h2>${h}${n?`<small>${n}</small>`:''}</div>`;
+const act = (f,k) => f && st[f]==k ? ' on' : '';
+
+function barColor(key, k, idx){
+  if(key === 'P' || key === 'D') return k === 0 ? 'var(--rd)' : (k === 1 ? 'var(--am)' : 'var(--gn-solid)');
+  if(key === 'H' || key === 'G') return k === 2 ? 'var(--rd)' : (k === 1 ? 'var(--am)' : 'var(--gn-solid)');
+  if(key === 'F') return k === 1 ? 'var(--rd)' : 'var(--gn-solid)';
+  if(key === 'A') return k >= 4 ? 'var(--rd)' : 'var(--lav-deep)';
+  if(key === 'B') return k >= 3 ? 'var(--rd)' : (k === 2 ? 'var(--am)' : 'var(--gn-solid)');
+  const palette = ['var(--c1)','var(--lav-deep)','var(--am)','var(--gn-solid)'];
+  return palette[idx % palette.length];
+}
+
+function bars(t, key, m, note, keepOrder){
+  const f = FK[key];
+  let a = grp(rows(f), key, DB[DN[key]].length).filter(x => x.c > 0);
+  if(!keepOrder) a.sort((p,q) => q[m] - p[m]);
+  const mx = Math.max(...a.map(x => x[m]), 1e-6);
+  const fmt = m==='c' ? fm.n : (m==='avg' ? fm.sc : fm.p);
+  return card(t, a.map((x, idx) => `<button class="r${act(f,x.k)}" data-f="${f}" data-k="${x.k}" title="${DB[DN[key]][x.k]}: ${fmt(x[m])} (${fm.n(x.c)} patients)"><span>${DB[DN[key]][x.k]}</span><div class="bar-track"><i style="width:${Math.max(4, x[m]/mx*100)}%;background:${barColor(key, x.k, idx)}"></i></div><em>${fmt(x[m])}</em></button>`).join('') || '<div class="em">No data</div>', note);
+}
+
+function donut(t, key, note, isDark=false){
+  const f = FK[key];
+  const a = grp(rows(f), key, DB[DN[key]].length).filter(x => x.c > 0);
+  const T = a.reduce((s,x) => s + x.c, 0) || 1;
+  // Use the lime-green ring aesthetic on dark widget or semantic priority colors
+  const cs = isDark
+    ? ['var(--lime)','var(--am)','#6366F1']
+    : (key==='R' ? ['var(--rd)','var(--am)','var(--gn-solid)'] : ['var(--lav-deep)','var(--am)','var(--gn-solid)','var(--c1)']);
+  const C = 2 * Math.PI * 34;
+  let acc = 0;
+  const topPct = a.length ? fm.p(a[0].c / T) : '0%';
+  const sl = a.map((x,i) => {
+    const L = x.c / T * C;
+    const r = `<circle r="34" cx="50" cy="50" fill="none" stroke="${cs[x.k%cs.length]}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${L} ${C-L}" stroke-dashoffset="${-acc}" transform="rotate(-90 50 50)"><title>${DB[DN[key]][x.k]}: ${fm.p(x.c/T)} (${fm.n(x.c)})</title></circle>`;
+    acc += L;
+    return r;
+  }).join('');
+  const centerText = `<text x="50" y="54" text-anchor="middle" font-size="14" font-weight="800" fill="${isDark?'#FFFFFF':'var(--ink)'}">${topPct}</text>`;
+  return card(t, `<div class="dn"><svg viewBox="0 0 100 100" role="img" aria-label="${t}"><circle r="34" cx="50" cy="50" fill="none" stroke="${isDark?'#32323A':'#ECE9F2'}" stroke-width="14"/>${sl}${centerText}</svg><div class="lg">${a.map(x => `<button class="${act(f,x.k).trim()}" data-f="${f}" data-k="${x.k}"><span><s style="background:${cs[x.k%cs.length]}"></s>${DB[DN[key]][x.k]}</span><b>${fm.p(x.c/T)}</b></button>`).join('')}</div></div>`, note, false, isDark ? 'dark-widget' : '');
+}
+
+function cols(t, key, m, note){
+  const f = FK[key];
+  const g = grp(rows(f), key, DB[DN[key]].length);
+  const mx = Math.max(...g.map(x => x[m]), 1e-6);
+  const fmt = m==='c' ? fm.n : (m==='avg' ? v=>v.toFixed(1) : fm.p);
+  return card(t, `<div class="cl">${g.map((x, idx) => `<button data-f="${f}" data-k="${x.k}" class="${st[f]==x.k?'on':''}" title="${DB[DN[key]][x.k]}: ${fmt(x[m])}"><b>${fmt(x[m])}</b><i style="height:${Math.max(6, x[m]/mx*78)}%;background:${barColor(key, x.k, idx)}"></i><span>${DB[DN[key]][x.k].split(' ')[0]}</span></button>`).join('')}</div>`, note);
+}
+
+function ageLine(t, note){
+  const g = grp(rows('a'), 'A', 7);
+  const mn = 64, mx = 81;
+  const pt = g.map((x,i) => [20 + i*43, 92 - ((Math.max(mn, x.avg) - mn)/(mx - mn))*74]);
+  const areaPts = `20,94 ${pt.map(p=>p.join(',')).join(' ')} ${20+6*43},94`;
+  return card(t, `<svg class="ln" viewBox="0 0 300 112" role="img" aria-label="${t}"><defs><linearGradient id="lavGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7C5CE6" stop-opacity="0.28"/><stop offset="100%" stop-color="#7C5CE6" stop-opacity="0.0"/></linearGradient></defs><polygon points="${areaPts}" fill="url(#lavGrad)"/><polyline fill="none" stroke="var(--lav-deep)" stroke-width="2.8" stroke-linecap="round" points="${pt.map(p=>p.join(',')).join(' ')}"/><line x1="192" y1="14" x2="192" y2="94" stroke="var(--rd)" stroke-dasharray="3 3" stroke-width="1.3"/>${pt.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i>=4?4.2:3.0}" fill="${i>=4?'var(--rd)':'var(--dark-card)'}" stroke="#fff" stroke-width="1.2"><title>${DB.age[i]}: ${g[i].avg.toFixed(1)} pts</title></circle>`).join('')}${DB.age.map((n,i)=>`<text x="${20+i*43}" y="108" text-anchor="middle">${n}</text>`).join('')}</svg>`, note);
+}
+
+function takeawaysCard(t, items, note){
+  return card(t, `<div class="ins">${items.map(x => `<div class="ins-item"><b>${x[0]}</b>${x[1]}</div>`).join('')}</div>`, note);
+}
+
+function kpis(){
+  const ix = rows();
+  const n = ix.length;
+  let scSum = 0, hiCnt = 0, lowCnt = 0, fbsHi = 0, fbsTot = 0;
+  for(const i of ix){
+    scSum += DB.S[i];
+    if(DB.R[i] === 0) hiCnt++;
+    if(DB.R[i] === 2) lowCnt++;
+    if(DB.G[i] === 2){ fbsTot++; if(DB.R[i] === 0) fbsHi++; }
+  }
+  const avgSc = n ? (scSum/n).toFixed(1) : '0.0';
+  const hiPct = n ? fm.p(hiCnt/n) : '0.0%';
+  const lowPct = n ? fm.p(lowCnt/n) : '0.0%';
+
+  const P = {
+    Overview: [
+      ['Screened Cohort', fm.n(n), 'Survived 47,541 raw screen', 'Cohort Progress'],
+      ['High Risk Share', hiPct, `${fm.n(hiCnt)} patients in High band`, 'High Priority'],
+      ['Average Risk Score', avgSc + ' pts', '+11.8 pt climb from 18–29 to 60+', 'Medium Priority'],
+      ['Low Risk Share', lowPct, `${fm.n(lowCnt)} patients in Low band`, 'Baseline Tag'],
+      ['Lifestyle Offset', '-12.0 pts', 'Beats +9.7 pt genetic penalty', 'Low Risk Gain']
+    ],
+    Demographics: [
+      ['Filtered Patients', fm.n(n), 'Click any age band to filter', 'Active Cohort'],
+      ['Youngest Band (18-29)', '67.1 pts', 'Already above Moderate line', 'Baseline'],
+      ['60+ Plateau Score', '78.9 pts', '60-69, 70-79 & 80-90 tied', 'High Priority'],
+      ['Mid-Life Climb', '+11.8 pts', 'Accumulates in 30–59, stops at 60', 'Age Window'],
+      ['Target Intervention', 'Age 40–59', 'Before risk score locks in at 60', 'Action Window']
+    ],
+    Clinical: [
+      ['Fasting Sugar >140', fbsTot ? fm.p(fbsHi/fbsTot) : '87.3%', '#1 strongest diagnostic divider', 'Danger Zone'],
+      ['Diabetic HbA1c Risk', '82.0%', '2.1x high-risk vs Normal (38%)', 'High Priority'],
+      ['BMI to Obese II Jump', '+18.8 pts', 'Saturates flat at Obese II & III', 'Medium Priority'],
+      ['BMI vs HbA1c Corr.', 'r = -0.006', 'Flat trend line — zero correlation', 'Clinical Myth'],
+      ['Best Single Screen', 'Fasting Glucose', '2x separation strength vs BMI', 'Top Protocol']
+    ],
+    Lifestyle: [
+      ['Low Activity High-Risk', '81.0%', 'vs 69.0% for Moderate & High', 'Inactivity Risk'],
+      ['Poor Diet High-Risk', '80.0%', 'vs 70.0% for Average & Healthy', 'Diet Penalty'],
+      ['Inactivity Penalty', '+12.0 pts', 'Moving at all buys full benefit', 'Step Cliff'],
+      ['Family History Cost', '+9.7 pts', '78.9 avg score vs 69.2 without', 'Genetics Tag'],
+      ['Lifestyle Earn-Back', '12.0 pts', 'Spans 88 (worst) down to 76 (best)', 'Earned Back']
+    ]
+  };
+  return {k: P[st.p], n};
+}
+
+const CH = {
+  Overview: () => [
+    donut('Q1 · Overall Diabetes Risk Distribution', 'R', 'Click a slice to filter. 73.2% (25,113) are High Risk.', true),
+    ageLine('Q2 · Average Risk Score Trajectory by Age', 'Rises from 67.1 (18-29) to 78.9 (60-69), then flattens.'),
+    cols('Q4 · High-Risk Share by HbA1c Tier', 'H', 'hi', 'Normal: 38% · Prediabetes: 60% · Diabetic: 82%'),
+    bars('Q8 · Physical Activity High-Risk Share', 'P', 'hi', 'Low: 81% vs Moderate/High: 69% (12-pt cliff)', 1),
+    bars('Q9 · Diet Quality High-Risk Share', 'D', 'hi', 'Poor: 80% vs Average/Healthy: 70%', 1),
+    takeawaysCard('Q10 · Executive Decisions Supported', [
+      ['01 · Screen on Fasting Glucose First', '87.3% high risk >140 mg/dL. Separates risk 2x as strongly as BMI.'],
+      ['02 · Intervene at Ages 40–59', 'Risk accumulates in mid-life and plateaus at 60.'],
+      ['03 · Escape the "Poor" Lifestyle Tier', '12 points earned back vs 9.7 inherited from family history.']
+    ], 'Genetics load the gun (+9.7 pts) — lifestyle pulls it back (-12 pts).')
+  ],
+  Demographics: () => [
+    bars('Q3 · Average Risk Score by Age Band', 'A', 'avg', '60-69 (78.9), 70-79 (78.9) & 80-90 (78.6) share top spot', 1),
+    ageLine('Q2 · Mid-Life Accumulation vs 60+ Plateau', 'Dashed coral line marks age 60 inflection point'),
+    cols('Screened Patient Volume by Age Group', 'A', 'c', 'Click any age column to isolate cohort'),
+    donut('Risk Band Split for Selected Age', 'R', 'Proportion of High, Moderate, and Low risk', true),
+    bars('Family History Split in Selected Age', 'F', 'avg', 'Average risk score by genetic background', 1),
+    takeawaysCard('Demographic Insights & Data Hygiene', [
+      ['Mid-Life Accumulation Window', 'Total spread across 6 decades is 11.8 points — all gained before age 60.'],
+      ['Senior Screening Fallacy', 'Programmes aimed at 65+ arrive after the risk score is already set.'],
+      ['Data Quality Foundation', '13,257 rows (27.9%) quarantined for BP/BMI anomalies; 34,284 clean records used.']
+    ])
+  ],
+  Clinical: () => [
+    cols('Q4 · High-Risk Share Across HbA1c Tiers', 'H', 'hi', '2.1x high-risk concentration in Diabetic vs Normal'),
+    bars('Q5 · High-Risk Share Across BMI Categories', 'B', 'hi', '+18.8 pt jump Normal to Obese II; Obese II & III saturate', 1),
+    cols('Q7 · Danger Zone: Fasting Blood Sugar Tiers', 'G', 'hi', '87.3% High Risk above 140 mg/dL fasting glucose'),
+    donut('Cohort Breakdown by HbA1c Category', 'H', 'Click to filter by glycemic control tier', true),
+    bars('Average Risk Score by BMI Category', 'B', 'avg', 'Underweight tracks Normal; curve levels off at Obese II', 1),
+    takeawaysCard('Q6 & Q7 · Clinical Diagnostic Synthesis', [
+      ['BMI vs HbA1c Myth (r = -0.006)', 'Scatter trend line is completely flat. Knowing BMI tells you nothing about HbA1c.'],
+      ['Marker Strength Ranking', '1. Fasting Blood Sugar (>140 mg/dL = 87.3% high risk) · 2. HbA1c · 3. BMI.'],
+      ['Quality Screen Anomalies Caught', '3,797 impossible BP readings (diastolic ≥ systolic) & 3,692 out-of-range BMIs removed.']
+    ])
+  ],
+  Lifestyle: () => [
+    cols('Q8 · Physical Activity Level (% High Risk)', 'P', 'hi', 'Low: 81% · Moderate: 69% · High: 69%'),
+    cols('Q9 · Diet Quality Level (% High Risk)', 'D', 'hi', 'Poor: 80% · Average: 70% · Healthy: 70%'),
+    bars('Q10 · Family History Impact (Avg Score)', 'F', 'avg', 'Family history costs +9.7 points on average (78.9 vs 69.2)', 1),
+    donut('Physical Activity Distribution', 'P', 'Click a slice to test lifestyle countermeasure', true),
+    donut('Diet Quality Distribution', 'D', 'Two independent behaviours, one identical step shape'),
+    takeawaysCard('Q10 · Genetics vs Lifestyle Countermeasure', [
+      ['12-Point Lifestyle Swing (88 → 76)', 'Among patients with family history, moving from worst to best habits cuts median risk by 12 pts.'],
+      ['A Cliff, Not a Slope', 'Moderate activity (69%) and High activity (69%) score identically. Moving at all buys the full benefit.'],
+      ['Practical Clinical Target', 'Focus resources on moving patients out of Poor/Inactive rather than chasing perfection.']
+    ])
+  ]
+};
+
+function render(){
+  const {k, n} = kpis();
+  $('#ti').textContent = 'Comprehensive Diabetes Risk Analysis · ' + st.p;
+  $('#tabs').innerHTML = PG.map(p => `<button class="tab" data-p="${p}" ${p==st.p?'aria-current="page"':''}>${p}</button>`).join('');
+  const sel = (id,lb,arr,v) => `<label>${lb}<select id="${id}"><option value="-1">All</option>${arr.map((x,i)=>`<option value="${i}" ${v==i?'selected':''}>${x}</option>`).join('')}</select></label>`;
+  $('#fl').innerHTML =
+    sel('r','Risk Band',DB.risk,st.r) +
+    sel('a','Age Group',DB.age,st.a) +
+    sel('h','HbA1c',DB.hba1c,st.h) +
+    sel('p_act','Activity',DB.act,st.p_act) +
+    sel('d','Diet',DB.diet,st.d) +
+    sel('f','Genetics',DB.fam,st.f) +
+    `<button class="rs" id="rs">Reset filters</button><span class="st">Screened Cohort · ${fm.n(n)} of ${fm.n(N)} patients</span>`;
+  $('#kp').innerHTML = k.map(x => `<div class="k"><span class="pill-tag">${x[3]}</span><span>${x[0]}</span><b>${x[1]}</b><span>${x[2]}</span></div>`).join('');
+  $('#gr').innerHTML = n ? CH[st.p]().join('') : '<div class="em" style="grid-column:1/-1">No patients match this filter combination.</div>';
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-p],[data-f],#rs');
+  if(!b) return;
+  if(b.dataset.p) st.p = b.dataset.p;
+  else if(b.id == 'rs') { st.a = st.r = st.h = st.b = st.p_act = st.d = st.f = st.g = -1; }
+  else { const f = b.dataset.f, k = +b.dataset.k; st[f] = st[f]==k ? -1 : k; }
+  render();
+});
+
+document.addEventListener('change', e => {
+  if(e.target.matches('#fl select')){
+    st[e.target.id] = +e.target.value;
+    render();
+  }
+});
+
+try { render(); } catch(e) { $('#gr').innerHTML = '<div class="em" style="grid-column:1/-1">Dashboard error: '+e.message+'</div>'; }
+</script>
+</body>
+</html>
