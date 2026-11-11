@@ -37,3 +37,11 @@ A comprehensive healthcare analytics project leveraging **Python (Pandas, Seabor
   * Interactive Notebook: [Diabetes_Risk_Analysis.ipynb](Diabetes_Risk_Analysis.ipynb)
 * Executive Slide Deck: [Diabetes_Risk_Analysis_Deck.pptx](Diabetes_Risk_Analysis_Deck.pptx)
 * * Executive Slide Deck: [Diabetes_Risk_Analysis_Deck.pdf](Diabetes_Risk_Analysis_Deck.pdf)
+  * ---
+
+## 📊 Interactive Executive Dashboard
+* **File:** [diabetes_risk_interactive_dashboard-v3.html](diabetes_risk_interactive_dashboard-v3.html)
+* **Key Features:**
+  * **4 Interactive Views:** *Overview*, *Demographics*, *Clinical Biomarkers*, and *Lifestyle Countermeasures*.
+  * **Live Cross-Filtering:** Dynamically slice the **34,284 screened patient cohort** by Risk Band, Age Group, HbA1c Tier, Physical Activity, Diet Quality, and Family History.
+  * **Zero Dependencies:** Self-contained HTML/CSS/SVG architecture that runs in any browser offline or via GitHub Pages.
